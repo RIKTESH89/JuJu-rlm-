@@ -29,7 +29,7 @@ async def root():
 def fake_child_run(input_tokens: int, output_tokens: int, answer: str = "done"):
     """Stand in for a real model call, spending a known number of tokens."""
 
-    def run(messages, tools, approve, model=None, raise_on_error=False, tokens=None):
+    def run(messages, tools, approve, model=None, raise_on_error=False, tokens=None, depth=0):
         tokens.context = input_tokens + output_tokens
         tokens.billed_input += input_tokens
         tokens.billed_output += output_tokens
@@ -111,7 +111,7 @@ def test_registry_lists_children_with_status_and_timing(monkeypatch):
 def test_failed_child_is_recorded_as_failed(monkeypatch):
     async def body():
         async with root() as parent:
-            def explode(messages, tools, approve, model=None, raise_on_error=False, tokens=None):
+            def explode(messages, tools, approve, model=None, raise_on_error=False, tokens=None, depth=0):
                 raise RuntimeError("provider exploded")
 
             monkeypatch.setattr(agent, "run", explode)

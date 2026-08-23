@@ -8,14 +8,24 @@ the kernel keeps its state between turns, and everything else follows from that:
 `Path.read_text()`, shell is a `%%bash` cell, and a subagent is a function call.
 
 ```
-+----------------------------------------------------+
-| scrivo                                               |
-| poolside/laguna-s-2.1:free                         |
-| cwd: /path/to/your/project                         |
-| /plan  /compact  ctrl-c to quit                    |
-+----------------------------------------------------+
+╭──────────────────────────── scrivo ────────────────────────────╮
+│                                                                │
+│  poolside/laguna-s-2.1:free                                    │
+│  /path/to/your/project                                         │
+│  /plan  toggle plan mode     /compact  summarize history       │
+│  ctrl-c  quit                                                  │
+│                                                                │
+╰────────────────────────────────────────────────────────────────╯
 
->
+› count the .py files here
+
+╭─ ipython ──────────────────────────────────────────────────────╮
+│ matches = list(Path(".").rglob("*.py"))                        │
+│ print(len(matches))                                            │
+╰────────────────────────────────────────────────────────────────╯
+  7
+
+There are 7 Python files.
 ```
 
 ## What makes it different

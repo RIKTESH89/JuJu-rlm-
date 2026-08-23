@@ -8,6 +8,7 @@ dependencies = [
     "requests>=2.31",
     "python-dotenv>=1.0",
     "jupyter-client>=8.0",
+    "rich>=13.0",
 ]
 
 # ipykernel is deliberately NOT listed here. It is installed at runtime into
@@ -23,7 +24,7 @@ dev = [
 scrivo = "scrivo:main"
 
 [tool.setuptools]
-py-modules = ["scrivo", "agent", "tools"]
+py-modules = ["scrivo", "agent", "tools", "ui"]
 packages = ["kernel"]
 
 [tool.pytest.ini_options]

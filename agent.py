@@ -4,6 +4,7 @@ from typing import Optional
 
 from openai import OpenAI
 
+import ui
 from tools import MODEL, SYSTEM
 
 # API key should be provided via environment variable for security
@@ -80,7 +81,7 @@ def compact(messages: list[dict], tokens: Optional[TokenState] = None) -> None:
 
     cut = last_turn_start(messages)
     if cut <= 1:
-        print("\n[nothing to compact yet]")
+        ui.notice("nothing to compact yet")
         return
 
     before = tokens.context
@@ -99,7 +100,7 @@ def compact(messages: list[dict], tokens: Optional[TokenState] = None) -> None:
     tokens.context = response.usage.completion_tokens
     tokens.billed_input += response.usage.prompt_tokens
     tokens.billed_output += response.usage.completion_tokens
-    print(f"\n[compacted {before} -> ~{tokens.context} tokens]")
+    ui.notice(f"compacted {before} → ~{tokens.context} tokens")
 
 
 PLAN_ON = (
@@ -116,6 +117,7 @@ def run(
     model: Optional[str] = None,
     raise_on_error: bool = False,
     tokens: Optional[TokenState] = None,
+    depth: int = 0,
 ) -> str:
     """Run the agent loop: stream LLM responses, execute tool calls as approved."""
 
@@ -138,12 +140,15 @@ def run(
             # "CHILD FAILED"; the interactive REPL keeps printing and carrying on.
             if raise_on_error:
                 raise
-            print(f"\nError calling LLM: {e}")
+            ui.notice(f"error calling the model: {e}", "error")
             return ""
 
         reply = ""
         tool_calls = []
         finish_reason = None
+
+        spinner = ui.thinking()
+        stop_spinner = spinner.__enter__()
 
         for chunk in stream:
             if chunk.usage:
@@ -159,7 +164,8 @@ def run(
                 finish_reason = choice.finish_reason
 
             if choice.delta.content:
-                print(choice.delta.content, end="", flush=True)
+                stop_spinner()
+                ui.assistant_text(choice.delta.content)
                 reply += choice.delta.content
 
             for tc in choice.delta.tool_calls or []:
@@ -176,8 +182,11 @@ def run(
                 if tc.function.arguments:
                     call["function"]["arguments"] += tc.function.arguments
 
+        stop_spinner()
+        spinner.__exit__(None, None, None)
+
         if finish_reason != "tool_calls":
-            print()
+            ui.assistant_done()
             messages.append({"role": "assistant", "content": reply})
             return reply
 
@@ -204,11 +213,12 @@ def run(
 
             tool.current_call_id = call["id"]
             args = json.loads(call["function"]["arguments"])
-            print(f"\n[{tool.name}] {args}")
+            ui.tool_call(tool.name, args, depth)
             if approve(tool, args):
                 result = tool.execute(args)
             else:
                 result = "user denied"
+            ui.tool_result(result, getattr(tool, "last_error", False), depth)
             messages.append(
                 {"role": "tool", "tool_call_id": call["id"], "content": result}
             )

@@ -27,7 +27,7 @@ def sockets_under(directory: Path):
     return sorted(p for p in directory.rglob("*.sock"))
 
 
-def fake_child_run(messages, tools, approve, model=None, raise_on_error=False, tokens=None):
+def fake_child_run(messages, tools, approve, model=None, raise_on_error=False, tokens=None, depth=0):
     tokens.billed_input += 1
     return "done"
 

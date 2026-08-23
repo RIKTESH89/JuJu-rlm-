@@ -18,6 +18,7 @@ import uuid
 from pathlib import Path
 from typing import Dict, Optional, Set
 
+import ui
 from kernel.bridge import HostBridge
 from kernel.manager import KernelManager
 
@@ -205,27 +206,10 @@ class Session:
         """Keep the terminal alive while a child runs; it can take minutes."""
         try:
             while True:
-                elapsed = time.time() - record["started_at"]
-                sys.stdout.write(
-                    "\r[{} | {} | {:.0f}s | {}]  ".format(
-                        record["name"], record["model"], elapsed, record["status"]
-                    )
-                )
-                sys.stdout.flush()
+                ui.child_tick(record)
                 await asyncio.sleep(1)
         except asyncio.CancelledError:
             pass
-
-    def _finish_line(self, record: dict) -> None:
-        sys.stdout.write(
-            "\r[{} | {} | {:.1f}s | {}]  \n".format(
-                record["name"],
-                record["model"],
-                record["duration_ms"] / 1000,
-                record["status"],
-            )
-        )
-        sys.stdout.flush()
 
     async def spawn(
         self, prompt: str, name: Optional[str] = None, model: Optional[str] = None
@@ -261,6 +245,7 @@ class Session:
         call_id = self.current_call_id
 
         started = time.monotonic()
+        ui.child_start(record)
         progress = asyncio.ensure_future(self._show_progress(record))
         running = asyncio.ensure_future(child.run_agent(prompt))
         self._running.add(running)
@@ -288,7 +273,7 @@ class Session:
             }
             record["usage"] = usage
             self.record_child_usage(child_id, usage, call_id)
-            self._finish_line(record)
+            ui.child_finish(record)
 
     async def run_agent(self, prompt: str) -> str:
         """Drive this session's own agent loop over one prompt."""
@@ -309,6 +294,7 @@ class Session:
                 self.model,
                 raise_on_error=True,
                 tokens=self.tokens,
+                depth=self.depth,
             )
 
         try:

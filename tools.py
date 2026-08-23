@@ -506,6 +506,7 @@ class IPythonTool(Tool):
 
     def __init__(self, session=None):
         self._session = session
+        self.last_error = False
 
     @property
     def session(self):
@@ -514,7 +515,11 @@ class IPythonTool(Tool):
     def execute(self, args: dict) -> str:
         session = self.session
         session.current_call_id = self.current_call_id
-        return shape_output(session.execute_code(args["code"]))
+        result = session.execute_code(args["code"])
+        # Remembered so the terminal can style a failure without guessing
+        # from the text.
+        self.last_error = result.error is not None
+        return shape_output(result)
 
 
 # Centralized tool registry — single source of truth.

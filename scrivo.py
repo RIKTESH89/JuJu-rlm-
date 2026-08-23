@@ -1,27 +1,17 @@
 import os
 
+import ui
 from agent import PLAN_OFF, PLAN_ON, compact, run
 from tools import MODEL, SYSTEM, get_tools, shutdown_root
 
 
 def ask(tool, args) -> bool:
     """Prompt user for approval on non-read-only tools."""
-    return tool.is_read_only or input("[y/n] ") == "y"
-
-
-def banner() -> None:
-    """Print a formatted banner with model and environment info."""
-    width = 52
-    print(f"+{'-' * width}+")
-    print(f"| scrivo{' ' * (width - 7)}|")
-    print(f"| {MODEL}".ljust(width) + " |")
-    print(f"| cwd: {os.getcwd()}".ljust(width) + " |")
-    print(f"| /plan  /compact  ctrl-c to quit".ljust(width) + " |")
-    print(f"+{'-' * width}+")
+    return tool.is_read_only or ui.approve(tool.name, args)
 
 
 def main() -> None:
-    banner()
+    ui.banner("scrivo", MODEL, os.getcwd())
     plan = False
     messages = [{"role": "system", "content": SYSTEM}]
 
@@ -34,7 +24,7 @@ def main() -> None:
 
 def repl(messages, plan: bool) -> None:
     while True:
-        line = input("\n(plan) > " if plan else "\n> ")
+        line = ui.prompt(plan)
 
         if line == "/compact":
             compact(messages)
@@ -43,7 +33,7 @@ def repl(messages, plan: bool) -> None:
         if line == "/plan":
             plan = not plan
             messages.append({"role": "system", "content": PLAN_ON if plan else PLAN_OFF})
-            print("plan mode on" if plan else "plan mode off")
+            ui.notice("plan mode on" if plan else "plan mode off", "warn")
             continue
 
         messages.append({"role": "user", "content": line})
