@@ -1,0 +1,12 @@
+[project]
+name = "rlm"
+version = "0.1.0"
+description = "In-kernel client for calling back into the host agent."
+requires-python = ">=3.9"
+
+[tool.setuptools]
+packages = ["rlm"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"

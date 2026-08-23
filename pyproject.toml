@@ -1,0 +1,34 @@
+[project]
+name = "juju"
+version = "0.2.0"
+description = "A terminal coding agent with tool support."
+requires-python = ">=3.9"
+dependencies = [
+    "openai>=1.0",
+    "requests>=2.31",
+    "python-dotenv>=1.0",
+    "jupyter-client>=8.0",
+]
+
+# ipykernel is deliberately NOT listed here. It is installed at runtime into
+# the kernel's own virtualenv (~/.myagent/kernel-venv) by kernel/manager.py,
+# so that the kernel never runs in the host interpreter.
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=8.0",
+]
+
+[project.scripts]
+juju = "juju:main"
+
+[tool.setuptools]
+py-modules = ["juju", "agent", "tools"]
+packages = ["kernel"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
