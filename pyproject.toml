@@ -1,5 +1,5 @@
 [project]
-name = "juju"
+name = "veto"
 version = "0.2.0"
 description = "A terminal coding agent with tool support."
 requires-python = ">=3.9"
@@ -20,10 +20,10 @@ dev = [
 ]
 
 [project.scripts]
-juju = "juju:main"
+veto = "veto:main"
 
 [tool.setuptools]
-py-modules = ["juju", "agent", "tools"]
+py-modules = ["veto", "agent", "tools"]
 packages = ["kernel"]
 
 [tool.pytest.ini_options]

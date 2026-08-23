@@ -33,5 +33,5 @@ def build(root: Path) -> Path:
     # Invalid JSON: a trailing comma. json.loads raises on it.
     (root / "broken.json").write_text('{\n  "total": 1234,\n  "name": "widget",\n}\n')
 
-    (root / "notes.md").write_text("Fixture repository for juju end-to-end tests.\n")
+    (root / "notes.md").write_text("Fixture repository for veto end-to-end tests.\n")
     return root

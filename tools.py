@@ -16,7 +16,7 @@ FIRECRAWL_KEY = os.environ.get("FIRECRAWL_KEY", "")
 
 MODEL = os.environ.get("DEV_MODEL", "poolside/laguna-s-2.1:free")
 
-IDENTITY = "You are juju, a terminal coding agent. Be concise. Prefer tools over guessing."
+IDENTITY = "You are veto, a terminal coding agent. Be concise. Prefer tools over guessing."
 
 TOOL_RULES = """You have one tool: `ipython`. It runs Python in a kernel that stays alive for the whole
 session. Every capability you have starts there.
@@ -79,8 +79,8 @@ def build_system(depth: Optional[int] = None, max_depth: Optional[int] = None) -
         f"files: {', '.join(sorted(os.listdir('.')))}",
     ]
 
-    if os.path.exists("JUJU.md"):
-        with open("JUJU.md") as handle:
+    if os.path.exists("VETO.md"):
+        with open("VETO.md") as handle:
             parts += ["", "Project instructions:", handle.read().rstrip()]
 
     if depth < max_depth:
