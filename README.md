@@ -114,15 +114,8 @@ The end-to-end suite (`tests/test_rlm_e2e.py`) drives the real agent against a f
 repository and makes real model calls — it is slow and consumes API quota. Everything else
 runs offline in well under a minute.
 
-## Design notes
-
-[`MIGRATION_DONE.md`](MIGRATION_DONE.md) records what this architecture is and how it got
-here. [`RLM_MIGRATION_NOTES.md`](RLM_MIGRATION_NOTES.md) is the survey of the tool-menu agent
-it replaced.
-
 ## Notes
 
-- `.env` holds live credentials — it is gitignored, keep it that way.
 - The agent runs shell commands and edits files. Read what it asks before approving.
 - Subagents run with auto-approval. Approving a cell that calls `rlm()` approves everything
   that child then does.
