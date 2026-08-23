@@ -1,15 +1,15 @@
-# veto
+# scrivo
 
 An RLM terminal coding agent.
 
 Most coding agents give the model a menu of tools — read a file, write a file, run a command
-— and let it pick one per turn. veto gives it a Python kernel instead. The model writes code,
+— and let it pick one per turn. scrivo gives it a Python kernel instead. The model writes code,
 the kernel keeps its state between turns, and everything else follows from that: files are
 `Path.read_text()`, shell is a `%%bash` cell, and a subagent is a function call.
 
 ```
 +----------------------------------------------------+
-| veto                                               |
+| scrivo                                               |
 | poolside/laguna-s-2.1:free                         |
 | cwd: /path/to/your/project                         |
 | /plan  /compact  ctrl-c to quit                    |
@@ -51,7 +51,7 @@ and unhandled exceptions alike.
   for `y`. Read-only calls run immediately.
 - **Compaction** — `/compact`, or automatically when the context window fills. Only completed
   turns are summarized; the turn in flight is left intact.
-- **Project instructions** — drop a `VETO.md` in your working directory and its contents
+- **Project instructions** — drop a `SCRIVO.md` in your working directory and its contents
   become standing instructions.
 - **Streaming** — replies print token by token.
 
@@ -73,10 +73,10 @@ DEV_MODEL='poolside/laguna-s-2.1:free'
 
 Get a key at [openrouter.ai/keys](https://openrouter.ai/keys). `DEV_MODEL` is optional.
 
-Then either activate the venv, or put `veto` on your PATH once:
+Then either activate the venv, or put `scrivo` on your PATH once:
 
 ```bash
-ln -sf "$PWD/.venv/bin/veto" /opt/homebrew/bin/veto
+ln -sf "$PWD/.venv/bin/scrivo" /opt/homebrew/bin/scrivo
 ```
 
 ## Usage
@@ -84,7 +84,7 @@ ln -sf "$PWD/.venv/bin/veto" /opt/homebrew/bin/veto
 Run it from the directory you want to work in — that becomes its working context.
 
 ```bash
-veto
+scrivo
 ```
 
 Type at the `>` prompt. `/plan` toggles plan mode, `/compact` summarizes the conversation,

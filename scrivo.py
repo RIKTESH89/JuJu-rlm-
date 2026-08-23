@@ -13,7 +13,7 @@ def banner() -> None:
     """Print a formatted banner with model and environment info."""
     width = 52
     print(f"+{'-' * width}+")
-    print(f"| veto{' ' * (width - 5)}|")
+    print(f"| scrivo{' ' * (width - 7)}|")
     print(f"| {MODEL}".ljust(width) + " |")
     print(f"| cwd: {os.getcwd()}".ljust(width) + " |")
     print(f"| /plan  /compact  ctrl-c to quit".ljust(width) + " |")
